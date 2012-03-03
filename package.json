@@ -1,0 +1,21 @@
+{
+  "author": "DarkAndStormy",
+  "name": "Chant",
+  "description": "chat room",
+  "version": "0.0.0",
+  "homepage": "darkandstormy.holt.be",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DarkAndStormy/StartupWeekend.git"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "buster test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
