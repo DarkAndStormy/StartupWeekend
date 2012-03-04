@@ -5,7 +5,7 @@
 			var socket = io.connect('/');
 
 			socket.on('message', function (data) {
-				$('#messages').append('<li>' + data + '</li>');
+				$('#messages').append('<li><span class="user">' + data.user + '</span> ' + data.message + '</li>');
 			});
 
             $('form').on('submit', function (event) {

@@ -46,10 +46,10 @@
 		'onMessage adds the new message to the page': function () {
 			var onMessage = socket.on.args[0][1];
 
-			onMessage.call(socket, 'some data');
+			onMessage.call(socket, {message: 'some data', user: 'some user'});
 
 			assert.equals($('#messages li').length, 1);
-			assert.equals($('#messages li').eq(0).html(), 'some data');
+			assert.equals($('#messages li').eq(0).html(), '<span class="user">some user</span> some data');
 		},
 
 		'submitting a message adds it to the DOM': function () {

@@ -8,6 +8,11 @@
 		chatHandler,
 		chant;
 
+    function getOnMessageFunction() {
+        chatHandler.onConnection(socket);
+        return socket.on.args[0][1];
+    }
+
 	buster.testCase('ChatHandler', {
 
 		setUp: function () {
@@ -16,7 +21,12 @@
 				emit: sinon.spy(),
 				broadcast: {
 					emit: sinon.spy()
-				}
+				},
+                handshake: {
+                    session: {
+                        user: null
+                    }
+                }
 			};
 		},
 
@@ -42,15 +52,32 @@
 		},
 
 		'onMessage emits message as a broadcast': function () {
-			var data = {};
-			chatHandler.onConnection(socket);
+			var data = {},
+                onMessage = getOnMessageFunction();
 
-			socket.on.args[0][1].call(socket, data);
+            onMessage.call(socket, data);
 
-			assert.called(socket.broadcast.emit);
 			assert.equals(socket.broadcast.emit.args[0][0], 'message');
-			assert.equals(socket.broadcast.emit.args[0][1], data);
+			assert.equals(socket.broadcast.emit.args[0][1].message, data);
+
+            data = {something: 2};
+            onMessage.call(socket, data);
+            assert.equals(socket.broadcast.emit.args[1][1].message, data);
 		},
+
+        'onMessage emits session user as part of broadcast': function () {
+            var data = {},
+                onMessage = getOnMessageFunction();
+
+            socket.handshake.session.user = 'username';
+            onMessage.call(socket, data);
+
+            assert.equals(socket.broadcast.emit.args[0][1].user, socket.handshake.session.user);
+
+            socket.handshake.session.user = 'username 2';
+            onMessage.call(socket, data);
+            assert.equals(socket.broadcast.emit.args[1][1].user, socket.handshake.session.user);
+        }
 
 	});
 
