@@ -1,11 +1,13 @@
-(function() {
+(function(global) {
 	var config = module.exports;
 
 	config['Browser Tests'] = {
 		rootPath: "../",
 		environment: "browser",
 		sources: [
-			"client/js/*.js"
+			"client/js/jquery*.js",
+			"client/js/*.js",
+			"test/bootstrap.js"
 		],
 		tests: [
 			"test/client/test-*.js"
@@ -17,11 +19,12 @@
 		rootPath: "../",
 	    environment: "node",
 	    sources: [
-	        "lib/**/*.js"
+	        "lib/**/*.js",
+	        "test/bootstrap.js"
 	    ],
 	    tests: [
 	        "test/server/test-*.js"
 	    ]
 	};
 
-}());
+}(this));
