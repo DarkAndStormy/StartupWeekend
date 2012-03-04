@@ -60,16 +60,22 @@
 
 		'submitting a message adds it to the DOM': function () {
 			var text = 'some text',
-				$input = $('#input');
+				$input = $('#input'),
+                preventSpy = sinon.spy();
 
 			darkAndStormy.init();
 
+            var event = new jQuery.Event('submit', {
+                preventDefault: preventSpy
+            });
+
 			$input.val(text);
-			$input.parent().submit();
+			$input.parent().trigger(event);
 
 			assert.equals($('#messages li').length, 1);
+            assert.equals($('#messages li').eq(0).text(), text);
+            assert.calledOnce(preventSpy);
 		}
-
 	});
 
 }(this));

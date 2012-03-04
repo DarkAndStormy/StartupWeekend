@@ -8,8 +8,9 @@
 				$('#messages').append('<li>' + data + '</li>');
 			});
 
-            $('form').on('submit', function () {
-                $('#messages').append('<li></li>');
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                $('#messages').append('<li>' + $('#input').val() + '</li>');
             })
 		}
 	};
