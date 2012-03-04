@@ -10,9 +10,21 @@
 
             $('form').on('submit', function (event) {
                 event.preventDefault();
-                $('#messages').append('<li>' + $('#input').val() + '</li>');
-            })
+
+                var $input = $('#input'),
+                    message = $input.val();
+
+                $('#messages').append('<li>' + message + '</li>');
+                socket.emit('message', message);
+                $input.val('');
+            });
+
+
 		}
 	};
+
+    if (global.io) {
+        darkAndStormy.init();
+    }
 
 }(jQuery, this));

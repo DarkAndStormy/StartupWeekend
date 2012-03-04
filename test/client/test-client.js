@@ -6,7 +6,8 @@
 	};
 
 	var socket = {
-			on: function () {}
+			on: function () {},
+            emit: function () {}
 		},
 		markup = '<ol id="messages">'
 		+ '<form><input type="text" name="input" id="input"/></form>'
@@ -73,6 +74,29 @@
             $input.parent().trigger(event);
 
             assert.calledOnce(preventSpy);
+        },
+
+        'inbox box is cleared on form submit': function () {
+            var $input = $('#input');
+
+            $input.val('some value');
+
+            $input.parent().submit();
+
+            assert.equals($input.val(), '');
+        },
+
+        'message sent to server upon submission': function () {
+            var val = 'new message';
+
+            sinon.spy(socket, 'emit');
+
+            $('#input').val(val);
+            $('form').submit();
+
+            assert.calledOnce(socket.emit);
+            assert.equals(socket.emit.args[0][0], 'message');
+            assert.equals(socket.emit.args[0][1], val);
         }
 	});
 
