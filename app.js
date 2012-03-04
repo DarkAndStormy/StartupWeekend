@@ -3,6 +3,6 @@ var connect = require('connect')
   , io = require('socket.io').listen(app)
   , chatHandler = require('./lib/chat-handler');
 
-app.listen(80);
+app.listen(8000);
 
 io.sockets.on('connection', chatHandler.onConnection);
