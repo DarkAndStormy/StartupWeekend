@@ -5,11 +5,11 @@
         $('#messages').append('<li class="' + type + '"><span class="user">' + data.user + '</span> ' + data.message + '</li>');
     }
 
-	global.darkAndStormy = {
-		init: function() {
-			var socket = io.connect('/');
+    global.darkAndStormy = {
+        init: function() {
+            var socket = io.connect('/');
 
-			socket.on('message', addMessageToList);
+            socket.on('message', addMessageToList);
 
             $('form').on('submit', function (event) {
                 event.preventDefault();
@@ -21,14 +21,14 @@
                     message: message,
                     user: 'Me',
                     type: 'self'
-                })
+                });
                 socket.emit('message', message);
                 $input.val('');
             });
 
 
-		}
-	};
+        }
+    };
 
     if (global.io) {
         darkAndStormy.init();

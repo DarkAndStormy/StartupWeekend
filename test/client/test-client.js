@@ -1,71 +1,71 @@
 (function (global) {
-	'use strict';
+    'use strict';
 
-	global.io = {
-		connect: function () {}
-	};
+    global.io = {
+        connect: function () {}
+    };
 
-	var socket = {
-			on: function () {},
+    var socket = {
+            on: function () {},
             emit: function () {}
-		},
-		markup = '<ol id="messages">'
-		+ '<form><input type="text" name="input" id="input"/></form>'
-		+ '</ol>';
+        },
+        markup = '<ol id="messages">'
+        + '<form><input type="text" name="input" id="input"/></form>'
+        + '</ol>';
 
-	buster.testCase('Client Tests', {
+    buster.testCase('Client Tests', {
 
-		setUp: function () {
-			$('body').html(markup);
+        setUp: function () {
+            $('body').html(markup);
 
-			sinon.stub(io, 'connect', function () {
-				return socket;
-			});
+            sinon.stub(io, 'connect', function () {
+                return socket;
+            });
 
-			sinon.spy(socket, 'on');
+            sinon.spy(socket, 'on');
 
             darkAndStormy.init();
-		},
+        },
 
-		tearDown: function () {
-			io.connect.restore();
-			socket.on.restore();
-		},
+        tearDown: function () {
+            io.connect.restore();
+            socket.on.restore();
+        },
 
-		'test we connect to the server': function () {
-			assert.called(io.connect);
-			assert.equals(io.connect.args[0][0], '/');
-		},
+        'test we connect to the server': function () {
+            assert.called(io.connect);
+            assert.equals(io.connect.args[0][0], '/');
+        },
 
-		'we subscribe to messages': function () {
-			assert.called(socket.on);
-			assert.equals(socket.on.args[0][0], 'message');
-			assert.isFunction(socket.on.args[0][1]);
-		},
+        'we subscribe to messages': function () {
+            assert.called(socket.on);
+            assert.equals(socket.on.args[0][0], 'message');
+            assert.isFunction(socket.on.args[0][1]);
+        },
 
-		'onMessage adds the new message to the page': function () {
-			var onMessage = socket.on.args[0][1];
+        'onMessage adds the new message to the page': function () {
+            var onMessage = socket.on.args[0][1];
 
-			onMessage.call(socket, {message: 'some data', user: 'some user'});
+            onMessage.call(socket, {message: 'some data', user: 'some user'});
 
-			assert.equals($('#messages li').length, 1);
+            assert.equals($('#messages li').length, 1);
             var $message = $('#messages li').eq(0);
             assert.equals($message.html(), '<span class="user">some user</span> some data');
             assert($message.hasClass('peer'));
-		},
+        },
 
-		'submitting a message adds it to the DOM': function () {
-			var text = 'some text',
-				$input = $('#input');
+        'submitting a message adds it to the DOM': function () {
+            var text = 'some text',
+                $input = $('#input');
 
-			$input.val(text);
-			$input.parent().submit();
+            $input.val(text);
+            $input.parent().submit();
 
-			assert.equals($('#messages li').length, 1);
+            assert.equals($('#messages li').length, 1);
             var $message = $('#messages li').eq(0);
             assert.equals($message.html(), '<span class="user">Me</span> ' + text);
             assert($message.hasClass('self'));
-		},
+        },
 
         'message form onSubmit prevents the default behavior': function () {
             var $input = $('#input'),
@@ -102,6 +102,6 @@
             assert.equals(socket.emit.args[0][0], 'message');
             assert.equals(socket.emit.args[0][1], val);
         }
-	});
+    });
 
 }(this));
