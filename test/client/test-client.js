@@ -49,7 +49,7 @@
 			onMessage.call(socket, {message: 'some data', user: 'some user'});
 
 			assert.equals($('#messages li').length, 1);
-			assert.equals($('#messages li').eq(0).html(), '<span class="user">some user</span> some data');
+			assert.equals($('#messages li').eq(0).html(), '<span class="user peer">some user</span> some data');
 		},
 
 		'submitting a message adds it to the DOM': function () {
@@ -60,7 +60,7 @@
 			$input.parent().submit();
 
 			assert.equals($('#messages li').length, 1);
-            assert.equals($('#messages li').eq(0).text(), text);
+            assert.equals($('#messages li').eq(0).html(), '<span class="user self">Me</span> ' + text);
 		},
 
         'message form onSubmit prevents the default behavior': function () {
