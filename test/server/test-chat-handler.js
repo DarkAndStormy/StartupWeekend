@@ -1,11 +1,11 @@
 (function () {
     'use strict';
 
-	var buster = require('buster'),
-		sinon = require('sinon'),
-		chatHandler = require('../../lib/chat-handler'),
+    var buster = require('buster'),
+        sinon = require('sinon'),
+        chatHandler = require('../../lib/chat-handler'),
         common = require('../bootstrap.js'),
-		socket;
+        socket;
 
     function getOnMessageFunctionFromOnConnection() {
         chatHandler.onConnection(socket);
@@ -37,9 +37,9 @@
         'on connection, we emit an event telling the browser it connected successfully': function () {
             chatHandler.onConnection(socket);
 
-			assert.equals(socket.emit.args[0][0], 'status');
-			assert.equals(socket.emit.args[0][1], 'connected');
-		},
+            assert.equals(socket.emit.args[0][0], 'status');
+            assert.equals(socket.emit.args[0][1], 'connected');
+        },
 
         'on connection, we broadcast a message telling everyone we have arrived': function () {
             socket.handshake.session.user = common.anyString();
@@ -58,16 +58,16 @@
             assert.isFunction(socket.on.args[0][1]);
         },
 
-		'onMessage emits message as a broadcast': function () {
-			var data = {key: common.anyString()},
+        'onMessage emits message as a broadcast': function () {
+            var data = {key: common.anyString()},
                 onMessage = getOnMessageFunctionFromOnConnection();
 
             socket.broadcast.emit.reset();
             onMessage.call(socket, data);
 
-			assert.equals(socket.broadcast.emit.args[0][0], 'message');
-			assert.equals(socket.broadcast.emit.args[0][1].message, data);
-		},
+            assert.equals(socket.broadcast.emit.args[0][0], 'message');
+            assert.equals(socket.broadcast.emit.args[0][1].message, data);
+        },
 
         'onMessage emits session user as part of broadcast': function () {
             var data = {},

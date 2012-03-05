@@ -1,7 +1,7 @@
 (function (global) {
 
-	global.console = global.console || {};
-	global.console.log = buster.log;
+    global.console = global.console || {};
+    global.console.log = buster.log;
 
     global.common = {
         // TODO: rewrite this with tests. it is ugly.

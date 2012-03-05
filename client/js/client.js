@@ -32,8 +32,8 @@
                     message: 'joined'
                 });
             });
-		}
-	};
+        }
+    };
 
     if (global.io) {
         darkAndStormy.init();

@@ -8,25 +8,25 @@
     var socket = {
             on: function () {},
             emit: function () {}
-		},
+        },
         events,
-		markup = '<ol id="messages">'
-		+ '<form><input type="text" name="input" id="input"/></form>'
-		+ '</ol>';
+        markup = '<ol id="messages">'
+        + '<form><input type="text" name="input" id="input"/></form>'
+        + '</ol>';
 
     buster.testCase('Client Tests', {
 
-		setUp: function () {
+        setUp: function () {
             var test = this;
             events = {};
 
-			$('body').html(markup);
+            $('body').html(markup);
 
             sinon.stub(io, 'connect', function () {
                 return socket;
             });
 
-			sinon.stub(socket, 'on', function (key, callback) {
+            sinon.stub(socket, 'on', function (key, callback) {
                 events[key] = callback;
             });
 
@@ -43,9 +43,9 @@
             assert.equals(io.connect.args[0][0], '/');
         },
 
-		'we subscribe to messages': function () {
+        'we subscribe to messages': function () {
             assert.isFunction(common.getCallWithArgs(socket.on, ['message']).args[1]);
-		},
+        },
 
         'onMessage adds the new message to the page': function () {
             var onMessage = socket.on.args[0][1];
