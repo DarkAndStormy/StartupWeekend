@@ -9,6 +9,7 @@
 			on: function () {},
             emit: function () {}
 		},
+        events,
 		markup = '<ol id="messages">'
 		+ '<form><input type="text" name="input" id="input"/></form>'
 		+ '</ol>';
@@ -16,13 +17,18 @@
 	buster.testCase('Client Tests', {
 
 		setUp: function () {
+            var test = this;
+            events = {};
+
 			$('body').html(markup);
 
 			sinon.stub(io, 'connect', function () {
 				return socket;
 			});
 
-			sinon.spy(socket, 'on');
+			sinon.stub(socket, 'on', function (key, callback) {
+                events[key] = callback;
+            });
 
             darkAndStormy.init();
 		},
@@ -38,9 +44,7 @@
 		},
 
 		'we subscribe to messages': function () {
-			assert.called(socket.on);
-			assert.equals(socket.on.args[0][0], 'message');
-			assert.isFunction(socket.on.args[0][1]);
+            assert.isFunction(common.getCallWithArgs(socket.on, ['message']).args[1]);
 		},
 
 		'onMessage adds the new message to the page': function () {
@@ -101,6 +105,20 @@
             assert.calledOnce(socket.emit);
             assert.equals(socket.emit.args[0][0], 'message');
             assert.equals(socket.emit.args[0][1], val);
+        },
+
+        'we subscribe to peer-connection': function () {
+            var call = common.getCallWithArgs(socket.on, ['peer-connection']);
+
+            assert.isFunction(call.args[1]);
+        },
+
+        'the room is notified when someone joins': function () {
+            var user = common.anyString();
+            events['peer-connection'].call(socket, user);
+
+            assert.equals($('#messages li').length, 1);
+            assert.equals($('#messages li').eq(0).html(), '<span class="user peer">' + user + '</span> joined');
         }
 	});
 

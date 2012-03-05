@@ -26,7 +26,12 @@
                 $input.val('');
             });
 
-
+            socket.on('peer-connection', function (user) {
+                addMessageToList({
+                    user: user,
+                    message: 'joined'
+                });
+            });
 		}
 	};
 

@@ -4,9 +4,10 @@
 	var buster = require('buster'),
 		sinon = require('sinon'),
 		chatHandler = require('../../lib/chat-handler'),
+        common = require('../bootstrap.js'),
 		socket;
 
-    function getOnMessageFunction() {
+    function getOnMessageFunctionFromOnConnection() {
         chatHandler.onConnection(socket);
         return socket.on.args[0][1];
     }
@@ -36,15 +37,17 @@
 		'on connection, we emit an event telling the browser it connected successfully': function () {
 			chatHandler.onConnection(socket);
 
-			assert.called(socket.emit);
 			assert.equals(socket.emit.args[0][0], 'status');
 			assert.equals(socket.emit.args[0][1], 'connected');
 		},
 
         'on connection, we broadcast a message telling everyone we have arrived': function () {
+            socket.handshake.session.user = common.anyString();
+
             chatHandler.onConnection(socket);
 
-            assert.called(socket.broadcast.emit);
+            assert.equals(socket.broadcast.emit.args[0][0], 'peer-connection');
+            assert.equals(socket.broadcast.emit.args[0][1], socket.handshake.session.user);
         },
 
 		'we start listening for messages': function () {
@@ -56,31 +59,25 @@
 		},
 
 		'onMessage emits message as a broadcast': function () {
-			var data = {},
-                onMessage = getOnMessageFunction();
+			var data = {key: common.anyString()},
+                onMessage = getOnMessageFunctionFromOnConnection();
 
+            socket.broadcast.emit.reset();
             onMessage.call(socket, data);
 
-			assert.equals(socket.broadcast.emit.args[1][0], 'message');
-			assert.equals(socket.broadcast.emit.args[1][1].message, data);
-
-            data = {something: 2};
-            onMessage.call(socket, data);
-            assert.equals(socket.broadcast.emit.args[2][1].message, data);
+			assert.equals(socket.broadcast.emit.args[0][0], 'message');
+			assert.equals(socket.broadcast.emit.args[0][1].message, data);
 		},
 
         'onMessage emits session user as part of broadcast': function () {
             var data = {},
-                onMessage = getOnMessageFunction();
+                onMessage = getOnMessageFunctionFromOnConnection();
 
-            socket.handshake.session.user = 'username';
+            socket.broadcast.emit.reset();
+            socket.handshake.session.user = common.anyString();
             onMessage.call(socket, data);
 
-            assert.equals(socket.broadcast.emit.args[1][1].user, socket.handshake.session.user);
-
-            socket.handshake.session.user = 'username 2';
-            onMessage.call(socket, data);
-            assert.equals(socket.broadcast.emit.args[2][1].user, socket.handshake.session.user);
+            assert.equals(socket.broadcast.emit.args[0][1].user, socket.handshake.session.user);
         }
 
 	});
