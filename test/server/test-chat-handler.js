@@ -4,9 +4,7 @@
 	var buster = require('buster'),
 		sinon = require('sinon'),
 		chatHandler = require('../../lib/chat-handler'),
-		socket,
-		chatHandler,
-		chant;
+		socket;
 
     function getOnMessageFunction() {
         chatHandler.onConnection(socket);
@@ -43,6 +41,12 @@
 			assert.equals(socket.emit.args[0][1], 'connected');
 		},
 
+        'on connection, we broadcast a message telling everyone we have arrived': function () {
+            chatHandler.onConnection(socket);
+
+            assert.called(socket.broadcast.emit);
+        },
+
 		'we start listening for messages': function () {
 			chatHandler.onConnection(socket);
 
@@ -57,12 +61,12 @@
 
             onMessage.call(socket, data);
 
-			assert.equals(socket.broadcast.emit.args[0][0], 'message');
-			assert.equals(socket.broadcast.emit.args[0][1].message, data);
+			assert.equals(socket.broadcast.emit.args[1][0], 'message');
+			assert.equals(socket.broadcast.emit.args[1][1].message, data);
 
             data = {something: 2};
             onMessage.call(socket, data);
-            assert.equals(socket.broadcast.emit.args[1][1].message, data);
+            assert.equals(socket.broadcast.emit.args[2][1].message, data);
 		},
 
         'onMessage emits session user as part of broadcast': function () {
@@ -72,11 +76,11 @@
             socket.handshake.session.user = 'username';
             onMessage.call(socket, data);
 
-            assert.equals(socket.broadcast.emit.args[0][1].user, socket.handshake.session.user);
+            assert.equals(socket.broadcast.emit.args[1][1].user, socket.handshake.session.user);
 
             socket.handshake.session.user = 'username 2';
             onMessage.call(socket, data);
-            assert.equals(socket.broadcast.emit.args[1][1].user, socket.handshake.session.user);
+            assert.equals(socket.broadcast.emit.args[2][1].user, socket.handshake.session.user);
         }
 
 	});
