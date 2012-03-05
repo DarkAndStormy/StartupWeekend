@@ -1,0 +1,20 @@
+#messages{
+    list-style: none;
+    padding: 0;
+}
+#messages li{
+    padding: 5px;
+}
+
+.user{
+    font-weight: bold;
+}
+.user:after{
+    content: ': ';
+}
+.self{
+    background-color: #bada55;
+}
+.peer{
+    background-color: #0ff1ce;
+}

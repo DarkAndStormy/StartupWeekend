@@ -2,7 +2,7 @@
 
     function addMessageToList(data) {
         var type = data.type || 'peer';
-        $('#messages').append('<li><span class="user ' + type + '">' + data.user + '</span> ' + data.message + '</li>');
+        $('#messages').append('<li class="' + type + '"><span class="user">' + data.user + '</span> ' + data.message + '</li>');
     }
 
 	global.darkAndStormy = {
