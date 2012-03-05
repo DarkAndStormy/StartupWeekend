@@ -114,11 +114,14 @@
         },
 
         'the room is notified when someone joins': function () {
-            var user = common.anyString();
+            var user = common.anyString(),
+                $li;
             events['peer-connection'].call(socket, user);
 
             assert.equals($('#messages li').length, 1);
-            assert.equals($('#messages li').eq(0).html(), '<span class="user peer">' + user + '</span> joined');
+            $li = $('#messages li').eq(0);
+            assert.equals($li.html(), '<span class="user">' + user + '</span> joined');
+            assert($li.hasClass('peer'));
         }
     });
 
