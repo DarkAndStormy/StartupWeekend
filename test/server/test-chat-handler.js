@@ -5,6 +5,7 @@
         sinon = require('sinon'),
         chatHandler = require('../../lib/chat-handler'),
         common = require('../bootstrap.js'),
+        clock = require('../../lib/utils').clock,
         socket;
 
     function getOnMessageFunctionFromOnConnection() {
@@ -78,6 +79,23 @@
             onMessage.call(socket, data);
 
             assert.equals(socket.broadcast.emit.args[0][1].user, socket.handshake.session.user);
+        },
+
+        'onMessage emits timestamp as part of broadcast': function () {
+            var data = {},
+                onMessage = getOnMessageFunctionFromOnConnection(),
+                emit = socket.broadcast.emit,
+                timestamp = common.anyString();
+
+            clock.delegate = function () {
+                return timestamp;
+            };
+
+            emit.reset();
+            onMessage.call(socket, data);
+
+            assert(emit.args[0][1].hasOwnProperty('timestamp'));
+            assert.equals(emit.args[0][1].timestamp, timestamp);
         }
 
     });
