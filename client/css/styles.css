@@ -1,20 +1,28 @@
-#messages{
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+#messages {
     list-style: none;
     padding: 0;
 }
-#messages li{
+
+#messages li {
     padding: 5px;
 }
 
-.user{
+.user {
     font-weight: bold;
 }
-.user:after{
+
+.user:after {
     content: ': ';
 }
-.self{
+
+.self {
     background-color: #9db6d9;
 }
-.peer{
+
+.peer {
     background-color: #c0cad9;
 }
